@@ -1,0 +1,14 @@
+name: 'OMQ EAL315 - Alle Spiele in Einem'
+description: 'EAL315 - OMQ Menü: EAL310 bis EAL314 in einem Spiel'
+author: 'Kai Olaf Ketelhut'
+branding:
+  icon: 'grid'
+  color: 'purple'
+inputs:
+  wahl:
+    description: 'Welches Spiel? 1-5'
+    required: true
+    default: '5'
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
