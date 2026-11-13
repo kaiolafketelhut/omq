@@ -1,0 +1,14 @@
+name: 'OMQ EAL314 - Turnier Best of 5'
+description: 'EAL314 - Wer gewinnt 3 Runden zuerst? Du oder PC?'
+author: 'Kai Olaf Ketelhut'
+branding:
+  icon: 'trophy'
+  color: 'gold'
+inputs:
+  deine_siege:
+    description: 'Wie viele Runden hast du gewonnen? (0-3)'
+    required: true
+    default: '3'
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
