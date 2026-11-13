@@ -1,0 +1,17 @@
+name: 'OMQ Rate Spiel - DU rätst'
+description: 'EAL311 - User gibt Tipp, Action sagt höher/tiefer'
+author: 'Kai Olaf Ketelhut'
+branding:
+  icon: 'target'
+  color: 'green'
+inputs:
+  tipp:
+    description: 'Dein Tipp 1-100'
+    required: true
+  geheimzahl:
+    description: 'Geheimzahl zum testen'
+    required: false
+    default: '42'
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
