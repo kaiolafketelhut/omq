@@ -1,0 +1,21 @@
+name: 'OMQ EAL312 - Schwierigkeit + Highscore'
+description: 'EAL312 - Leicht/Mittel/Schwer + Highscore'
+author: 'Kai Olaf Ketelhut'
+branding:
+  icon: 'trophy'
+  color: 'yellow'
+inputs:
+  schwierigkeit:
+    description: 'leicht, mittel, schwer'
+    required: false
+    default: 'mittel'
+  tipp:
+    description: 'Dein Tipp'
+    required: true
+  geheimzahl:
+    description: 'Geheimzahl zum testen'
+    required: false
+    default: '42'
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
