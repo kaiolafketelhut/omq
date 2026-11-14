@@ -1,0 +1,14 @@
+name: 'OMQ EAL313 - DUELL Du vs Computer'
+description: 'EAL313 - Wer rät schneller? Du oder Binary Search?'
+author: 'Kai Olaf Ketelhut'
+branding:
+  icon: 'zap'
+  color: 'red'
+inputs:
+  deine_versuche:
+    description: 'Wie viele Versuche hast du gebraucht?'
+    required: true
+    default: '10'
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
