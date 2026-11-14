@@ -4,3 +4,4 @@
 convert
 __pycache__/
 build/
+*.BDXL
