@@ -40,3 +40,6 @@ much -- than I do about python.  It started out as my typical "google
 and do the monkey-see-monkey-do" kind of programming, but then I cut out
 the middle-man -- me -- and just used Google Antigravity to do the audio
 sample visualizer.
+
+## ⚖️ Related - Legal
+ASU SCALE 2027 Proposal (MAIN.FNT): https://github.com/kaiolafketelhut/improved-octo-adventure
