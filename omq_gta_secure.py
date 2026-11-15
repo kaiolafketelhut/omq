@@ -1,32 +1,36 @@
 """
-OMQ GTA SECURE v1.0 - Phase 3
-GTA Gameplay + OMQ Secure Core (EAL4+ TOE)
-FCS_COP.1, FDP_SDI.2, FIA_UAU.1, FPT_TST.1, FPT_FLS.1
+OMQ GTA SECURE v1.1 - Phase 5
+GTA + Secure Core + FIA_AFL.1 Rate-Limit + Externe Signatur
 """
 import sys, os
 sys.path.insert(0, "omq_secure/src")
-from omq_secure_core import selftest, hash_password, verify_password, save_secure, load_secure, derive_key
-import json, hashlib, hmac
+from omq_secure_core import selftest, hash_password, verify_password, save_secure, load_secure
+from rate_limit import check_lock, record_fail, reset_lock
+import json
 
 print("="*50)
-print("👑 OMQ GTA SECURE v1.0 - EAL4+ PHASE 3 🔒")
+print("OMQ GTA SECURE v1.1 - EAL4+ PHASE 5 - FIA_AFL.1")
 print("="*50)
 
-# FPT_TST.1 - Selbsttest beim Start, sonst STOP
 if not selftest():
     print("FPT_TST.1 FEHLER: TOE manipuliert! Spiel startet NICHT.")
     sys.exit(1)
 
-# FIA_UAU.1 - Login
+# FIA_AFL.1 - Sperre prüfen VOR Login
+if check_lock():
+    sys.exit(1)
+
 PW_FILE = "omq_secure_pw.json"
 if os.path.exists(PW_FILE):
     with open(PW_FILE) as f:
         stored = json.load(f)
     pw = input("Passwort (Secure Login): ")
     if not verify_password(pw, stored):
+        record_fail()
         print("FIA_UAU.1: Falsches Passwort! Zugang verweigert.")
         sys.exit(1)
-    print("Login OK! Willkommen zurück, Milliardär! 👑")
+    reset_lock()
+    print("Login OK! Willkommen zurück, Milliardär!")
 else:
     print("Neuer Spieler! Erstelle Secure Passwort:")
     pw = input("Neues Passwort (min. 8 Zeichen, MERKEN!): ")
@@ -35,11 +39,10 @@ else:
         json.dump(stored, f)
     print("Passwort-Hash gespeichert. NIE im Klartext!")
 
-# FDP_SDI.2 - Savegame laden, nur wenn Signatur OK
 data, msg = load_secure(pw)
 print(f"[LOAD] {msg}")
-if data is None and "Kein Savegame" not in msg and "manipuliert" in msg:
-    print("Savegame manipuliert! Starte mit 0$ - Cheater werden bestraft! 😈")
+if data is None and "manipuliert" in msg:
+    print("Savegame manipuliert! Starte mit 0$ - Cheater werden bestraft!")
     geld = 0
     punkte = 0
 elif data is None:
@@ -51,31 +54,28 @@ else:
     punkte = data.get("punkte", 0)
     print(f"Savegame geladen: {geld:,} $ | {punkte} Punkte")
 
-print("\nSteuerung:")
-print("4 = +26.000.000$ 💰 | 5 = Reset! | 1 = +100 Punkte | 0 = SICHER Speichern + Aussteigen")
-print("1.300.000.000$ = MILLIARDÄR! Ziel: 7.569.025.850$ schlagen!")
+print("\nSteuerung: 4 = +26.000.000$ | 1 = +100 Punkte | 5 = Reset | 0 = SICHER Speichern + Aussteigen")
+print("Ziel: 1.300.000.000$ = MILLIARDÄR!")
 
 while True:
-    print(f"\n💰 Geld: {geld:,} $ | ⭐ Punkte: {punkte}")
+    print(f"\nGeld: {geld:,} $ | Punkte: {punkte}")
     wahl = input("OMQ SECURE > ").strip()
     if wahl == "4":
         geld += 26000000
         punkte += 10
         print(f"+26.000.000$! Neuer Stand: {geld:,} $")
         if geld >= 1300000000:
-            print("🏆 MILLIARDÄR! 1.300.000.000$+ erreicht!")
+            print("MILLIARDÄR! 1.300.000.000$+ erreicht!")
     elif wahl == "1":
         punkte += 100
         print(f"+100 Punkte! Total: {punkte}")
     elif wahl == "5":
-        print("Reset! Geld wird auf 0 gesetzt, aber SECURE gespeichert...")
+        print("Reset! Geld auf 0, aber SECURE gespeichert...")
         geld = 0
         punkte = 0
     elif wahl == "0":
-        # FDP_SDI.2 - Sicher speichern mit Signatur
-        print(save_secure({"geld": geld, "punkte": punkte, "spiel": "OMQ GTA SECURE"}, pw))
-        print(f"Game Over! Du hast {geld:,} $ SECURE gesichert! 🔒")
-        print("Niemand kann das fälschen - HMAC-SHA256 schützt dich!")
+        print(save_secure({"geld": geld, "punkte": punkte, "spiel": "OMQ GTA SECURE v1.1"}, pw))
+        print(f"Game Over! Du hast {geld:,} $ SECURE gesichert!")
         break
     else:
-        print("Ungültig! Nur 4, 1, 5, 0 - FPT_FLS.1: Sicherer Zustand bleibt!")
+        print("Ungültig! Nur 4, 1, 5, 0")
